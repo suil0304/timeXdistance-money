@@ -13,7 +13,8 @@
 .ali-center {
     width: 50vw;
     margin: auto auto;
-    text-align: center;
+    display: flex;
+    align-items: center;
 }
 
 .inputs {
