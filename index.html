@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Time X Distance = Money</title>
-        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="./src/css/main.css">
     </head>
     <body>
         <main class="main-font ali-center">
@@ -15,10 +15,10 @@
                     <input type="text" class="inputs" id="start" placeholder="출발지 입력">
                     <input type="text" class="inputs" id="goal" placeholder="목적지 입력">
                     <button class="inputs" onclick="calculateRoute()">경로 찾기</button>
-                    
+
                     <button onclick="getCost()">비용 계산하기</button>
 
-                    <div id="result">버튼을 눌러주세요</div>
+                    <div id="result" style="margin-top: 7px; margin-bottom: 7px;">버튼을 눌러주세요</div>
                     
                     <div id="result-panel">
                         <p>거리: <span id="distance">-</span> km</p>
@@ -34,6 +34,6 @@
             }
         </script>
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=aa9ce89b512353090cc402c040c121ae&libraries=services"></script>
-        <script src="./js/map.js"></script>
+        <script type="module" src="./src/ts/map.ts"></script>
     </body>
 </html>
