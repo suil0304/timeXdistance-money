@@ -12,3 +12,16 @@ function calculateRoute() {
     // 3. 응답받은 좌표값들로 지도에 선(Polyline) 그리기
     // 4. 비용(fare) 데이터를 가져와 화면에 출력
 }
+
+async function getCost() {
+    const origin = "127.1,37.5";
+    const destination = "127.2,37.6";
+    
+    const response = await fetch(`https://time-x-distance-money.vercel.app/api/getRoute?origin=${origin}&destination=${destination}`);
+    const data = await response.json();
+
+    const taxiFare = data.routes[0].summary.fare.taxi;
+    const tollFare = data.routes[0].summary.fare.toll;
+
+    document.getElementById('result').innerText = `편도 택시비: ${taxiFare}원, 통행료: ${tollFare}원`;
+}
