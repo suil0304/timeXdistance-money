@@ -16,6 +16,10 @@
                     <input type="text" class="inputs" id="goal" placeholder="목적지 입력">
                     <button class="inputs" onclick="calculateRoute()">경로 찾기</button>
                     
+                    <button onclick="getCost()">비용 계산하기</button>
+
+                    <div id="result">버튼을 눌러주세요</div>
+                    
                     <div id="result-panel">
                         <p>거리: <span id="distance">-</span> km</p>
                         <p>통행료: <span id="toll">-</span> 원</p>
