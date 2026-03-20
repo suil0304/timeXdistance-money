@@ -59,7 +59,7 @@ async function calculateRoute(startValue:string = "", endValue:string | null = "
     }
 }
 
-function addressSearch(address:string) {
+function addressSearch(address:string, failCallback:() => void = () => {}) {
     geocoder.addressSearch(address, (result:any, status:any) => {
         if(status === kakao.maps.services.Status.OK) {
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
@@ -76,7 +76,7 @@ function addressSearch(address:string) {
             markers.push(marker);
         }
         else {
-            alert("주소를 찾을 수 없습니다.");
+            failCallback();
         }
     });
 }
@@ -112,16 +112,16 @@ const initVar = () => {
     });
 
     start.addEventListener("keydown", (e) => {
-        handleEnter(e, () => addressSearch(start.value));
+        handleEnter(e, () => addressSearch(start.value, () => start.focus()));
     });
     start.addEventListener("blur", () => {
-        addressSearch(start.value);
+        addressSearch(start.value, () => start.focus());
     });
     end.addEventListener("keydown", (e) => {
-        handleEnter(e, () => addressSearch(end.value));
+        handleEnter(e, () => addressSearch(end.value, () => end.focus()));
     });
     end.addEventListener("blur", () => {
-        addressSearch(end.value);
+        addressSearch(end.value, () => end.focus());
     });
     routeCalcButton.addEventListener('click', () => calculateRoute());
 }
