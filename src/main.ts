@@ -1,11 +1,13 @@
 /// <reference path="../node_modules/kakao.maps.d.ts/@types/index.d.ts" />
 import type {KakaoRouteResponse} from "../@types/types"
 
+// var
 var mapContainer:HTMLElement;
 var result:HTMLElement;
 var routeCalcButton:HTMLElement;
 var moneyCalcButton:HTMLElement;
 
+// func and arrow func
 function calculateRoute():any {
          
 }
@@ -46,8 +48,11 @@ const initVar = () => {
 }
 
 
+// onLoad
+kakao.maps.load(() => {
+    initMap();
+});
 
 window.onload = () => {
-    initMap();
     initVar();
 };
