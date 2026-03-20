@@ -5,7 +5,7 @@ import type {KakaoRouteResponse} from "../@types/types"
 var mapContainer:HTMLElement;
 var result:HTMLElement;
 var routeCalcButton:HTMLElement;
-var moneyCalcButton:HTMLElement;
+// var moneyCalcButton:HTMLElement;
 var start:HTMLInputElement;
 var end:HTMLInputElement;
 
@@ -102,7 +102,7 @@ const initMap = () => {
 }
 const initVar = () => {
     routeCalcButton = document.getElementById("route-calc") as HTMLElement;
-    moneyCalcButton = document.getElementById("money-calc") as HTMLElement;
+    // moneyCalcButton = document.getElementById("money-calc") as HTMLElement;
     start = document.getElementById("start") as HTMLInputElement;
     end = document.getElementById("end") as HTMLInputElement;
 
