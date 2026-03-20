@@ -3,21 +3,8 @@ import type {KakaoRouteResponse} from "../@types/types"
 
 var mapContainer:HTMLElement;
 var result:HTMLElement;
-const initMap = () => {
-    mapContainer = document.getElementById('map') as HTMLElement;
-    if(!mapContainer) return;
-
-    result = document.getElementById('result') as HTMLElement;
-
-    var mapOption = { 
-        center: new kakao.maps.LatLng(37.566826, 126.9786567),
-        level: 3 
-    };
-
-    const map = new kakao.maps.Map(mapContainer, mapOption);
-}
-
-window.onload = initMap;
+var routeCalcButton:HTMLElement;
+var moneyCalcButton:HTMLElement;
 
 function calculateRoute():any {
          
@@ -36,3 +23,30 @@ async function getCost():Promise<void> {
 
     result.innerText = `편도 택시비: ${taxiFare}원, 통행료: ${tollFare}원`;
 }
+
+const initMap = () => {
+    mapContainer = document.getElementById('map') as HTMLElement;
+    if(!mapContainer) return;
+
+    result = document.getElementById('result') as HTMLElement;
+
+    var mapOption = { 
+        center: new kakao.maps.LatLng(37.566826, 126.9786567),
+        level: 3 
+    };
+
+    new kakao.maps.Map(mapContainer, mapOption);
+}
+const initVar = () => {
+    routeCalcButton = document.getElementById("route-calc") as HTMLElement;
+    moneyCalcButton = document.getElementById("money-calc") as HTMLElement;
+
+    routeCalcButton.addEventListener("click", calculateRoute);
+    moneyCalcButton.addEventListener("click", getCost);
+}
+
+
+
+window.onload = () => {
+    initMap()
+};
