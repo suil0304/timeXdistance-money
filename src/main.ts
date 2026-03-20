@@ -48,5 +48,6 @@ const initVar = () => {
 
 
 window.onload = () => {
-    initMap()
+    initMap();
+    initVar();
 };
