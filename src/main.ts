@@ -10,13 +10,13 @@ var start:HTMLInputElement;
 var end:HTMLInputElement;
 
 var map:kakao.maps.Map;
+var markers:kakao.maps.Marker[] = [];
 
 // constant
 const geocoder = new kakao.maps.services.Geocoder();
 
 // func and arrow func
-async function getCost(start, end):Promise<void> {
-    
+async function getCost(start:string, end:string):Promise<void> {
     const response = await fetch(`https://time-x-distance-money.vercel.app/api/get-route?origin=${start}&destination=${end}`);
     const data = await response.json() as KakaoRouteResponse;
 
@@ -59,8 +59,8 @@ async function calculateRoute(startValue:string = "", endValue:string | null = "
     }
 }
 
-function searchAddress(address:string) {
-    geocoder.addressSearch(address, (result: any, status: any) => {
+function addressSearch(address:string) {
+    geocoder.addressSearch(address, (result:any, status:any) => {
         if(status === kakao.maps.services.Status.OK) {
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
             
@@ -73,6 +73,7 @@ function searchAddress(address:string) {
                 map: map,
                 position: coords
             });
+            markers.push(marker);
         }
         else {
             alert("주소를 찾을 수 없습니다.");
@@ -109,15 +110,20 @@ const initVar = () => {
         calculateRoute(start.value, end.value);
     });
 
-    start.addEventListener('keydown', (e) => {
-        handleEnter(e, () => end.focus());
+    start.addEventListener("keydown", (e) => {
+        handleEnter(e, () => addressSearch(start.value));
     });
-    end.addEventListener('keydown', (e) => {
-        handleEnter(e, () => calculateRoute());
+    start.addEventListener("blur", () => {
+        addressSearch(start.value);
+    });
+    end.addEventListener("keydown", (e) => {
+        handleEnter(e, () => addressSearch(end.value));
+    });
+    end.addEventListener("blur", () => {
+        addressSearch(end.value);
     });
     routeCalcButton.addEventListener('click', () => calculateRoute());
 }
-
 
 // onLoad
 kakao.maps.load(() => {
