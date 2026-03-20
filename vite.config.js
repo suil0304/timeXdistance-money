@@ -4,7 +4,7 @@ export default defineConfig({
   // 1. 배포 경로 설정
   // GitHub Pages 주소가 https://<username>.github.io/<repository>/ 형태라면 
   // base를 '/<repository>/'로 설정해야 합니다.
-  base: '/', 
+  base: 'https://suil0304.github.io/timeXdistance-money/', 
 
   build: {
     // 2. 빌드 결과물이 저장될 폴더 (기본값은 dist)
