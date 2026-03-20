@@ -13,7 +13,7 @@ var map:kakao.maps.Map;
 var markers:kakao.maps.Marker[] = [];
 
 // constant
-const geocoder = new kakao.maps.services.Geocoder();
+var geocoder:kakao.maps.services.Geocoder;
 
 // func and arrow func
 async function getCost(start:string, end:string):Promise<void> {
@@ -99,6 +99,7 @@ const initMap = () => {
     };
 
     map = new kakao.maps.Map(mapContainer, mapOption);
+    geocoder = new kakao.maps.services.Geocoder();
 }
 const initVar = () => {
     routeCalcButton = document.getElementById("route-calc") as HTMLElement;
