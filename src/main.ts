@@ -10,10 +10,10 @@ var start:HTMLInputElement;
 var end:HTMLInputElement;
 
 var map:kakao.maps.Map;
-var markers:Array<kakao.maps.Marker> = [];
-
-// constant
 var geocoder:kakao.maps.services.Geocoder;
+var place:kakao.maps.services.Places;
+
+var markers:Array<kakao.maps.Marker> = [];
 
 // func and arrow func
 async function getCost(start:string, end:string):Promise<void> {
@@ -26,33 +26,54 @@ async function getCost(start:string, end:string):Promise<void> {
     result.innerText = `편도 택시비: ${taxiFare}원, 통행료: ${tollFare}원`;
 }
 
-function getCoords(address:string):Promise<kakao.maps.LatLng> {
-    return new Promise((resolve, reject) => {
-        const geocoder = new kakao.maps.services.Geocoder();
+async function getCoords(query:string):Promise<kakao.maps.LatLng> {
+    try {
+        return await getCoordsByKeyword(query);
+    }
+    catch {
+        return await getCoordsByAddress(query);
+    }
+}
 
-        geocoder.addressSearch(address, (result:any, status:any) => {
-        if (status === kakao.maps.services.Status.OK) {
-            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-            resolve(coords);
-        }
-        else {
-            reject(new Error(`${address} 주소를 찾을 수 없습니다.`));
-        }
+function getCoordsByAddress(address:string):Promise<kakao.maps.LatLng> {
+    return new Promise((resolve, reject) => {
+            const geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.addressSearch(address, (result:any, status:any) => {
+            if (status === kakao.maps.services.Status.OK) {
+                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                resolve(coords);
+            }
+            else {
+                reject(new Error(`${address} 주소를 찾을 수 없습니다.`));
+            }
         });
     });
 }
 
-function getCoordsForAPI(address:string):Promise<string> {
+function getCoordsByKeyword(keyword:string): Promise<kakao.maps.LatLng> {
     return new Promise((resolve, reject) => {
-        geocoder.addressSearch(address, (result:any, status:any) => {
-            if(status === kakao.maps.services.Status.OK) {
-                // Vercel API 형식에 맞게 "경도,위도" 문자열 반환
-                resolve(`${result[0].x},${result[0].y}`);
+            place.keywordSearch(keyword, (data:any, status:any) => {
+            if (status === kakao.maps.services.Status.OK) {
+                const coords = new kakao.maps.LatLng(data[0].y, data[0].x);
+                resolve(coords);
             }
             else {
-                reject();
+                reject(new Error(`'${keyword}' 장소를 찾을 수 없습니다.`));
             }
         });
+    });
+}
+
+function getCoordsForAPI(query:string):Promise<string> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const coords = await getCoords(query);
+            resolve(`${coords.getLng()},${coords.getLat()}`);
+        }
+        catch {
+            reject();
+        }
     });
 }
 
@@ -74,15 +95,15 @@ async function calculateRoute(startValue:string = "", endValue:string = ""):Prom
     }
 }
 
-async function addressSearch(address:string) {
+async function search(query:string) {
     try {
-        const coords = await getCoords(address);
+        const coords = await getCoords(query);
 
         if(markers.length > 0) {
             markers.pop();
         }
 
-        console.log(`주소: ${address}`);
+        console.log(`주소: ${query}`);
         console.log(`위도(y): ${coords.getLat()}, 경도(x): ${coords.getLng()}`);
 
         map.setCenter(coords);
@@ -95,7 +116,7 @@ async function addressSearch(address:string) {
         markers.push(marker);
     }
     catch {
-
+        console.log(new Error(`없는 주소 검색: ${query}`));
     }
 }
 
@@ -114,13 +135,12 @@ const initMap = () => {
     var mapOption = { 
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
         level: 3,
-        keyboardShortcuts: {speed: 10}
+        keyboardShortcuts: {speed: 20}
     };
 
     map = new kakao.maps.Map(mapContainer, mapOption);
     geocoder = new kakao.maps.services.Geocoder();
-
-    map.setMaxLevel(9);
+    place = new kakao.maps.services.Places();
 }
 const initVar = () => {
     routeCalcButton = document.getElementById("route-calc") as HTMLElement;
@@ -132,13 +152,13 @@ const initVar = () => {
         start.blur();
     }));
     start.addEventListener("blur", () => {
-        addressSearch(start.value);
+        search(start.value);
     });
     end.addEventListener("keydown", (e) => handleEnter(e, () => {
         end.blur();
     }));
     end.addEventListener("blur", () => {
-        addressSearch(end.value);
+        search(end.value);
     });
 
     routeCalcButton.addEventListener("click", () => {
