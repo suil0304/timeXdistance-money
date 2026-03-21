@@ -60,11 +60,12 @@ async function calculateRoute(startValue:string = "", endValue:string | null = "
 }
 
 function addressSearch(address:string, failCallback:() => void = () => {}) {
+    if(markers.length > 0) {
+        markers.pop();
+    }
+
     geocoder.addressSearch(address, (result:any, status:any) => {
         if(status === kakao.maps.services.Status.OK) {
-            if(markers.length > 0) {
-                markers.pop();
-            }
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
             
             console.log(`주소: ${address}`);
