@@ -98,7 +98,9 @@ async function search(query:string) {
         const coords = await getCoords(query);
 
         if(markers.length > 0) {
-            markers.pop();
+            var popedMarker:kakao.maps.Marker | undefined | null = markers.pop();
+            popedMarker?.setMap(null);
+            popedMarker = null;
         }
 
         console.log(`주소: ${query}`);
