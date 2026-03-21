@@ -4,7 +4,6 @@ import type {
     DistanceContents,
     TimeContents
 } from "../@types/types.d.ts"
-import {DistanceUnit} from "../@types/types";
 
 // var(Elements)
 var mapContainer:HTMLElement;
@@ -32,10 +31,10 @@ var markers:Array<kakao.maps.Marker> = [];
 // func and arrow func
 function calcMeterAndUnit(distanceValue:number):DistanceContents {
     if(distanceValue >= 600) {
-        return {distanceValue: (distanceValue / 1000.0), unitValue: DistanceUnit.KM};
+        return {distanceValue: (distanceValue / 1000.0), unitValue: "km"};
     }
     else {
-        return {distanceValue: distanceValue, unitValue: DistanceUnit.M};
+        return {distanceValue: distanceValue, unitValue: "m"};
     }
 }
 

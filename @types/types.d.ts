@@ -11,14 +11,9 @@ export interface KakaoRouteResponse {
     }[];
 }
 
-enum DistanceUnit {
-    KM = "km",
-    M = "m"
-}
-
 interface DistanceContents {
     distanceValue:number,
-    unitValue:DistanceUnit
+    unitValue:"km" | "m"
 }
 
 interface TimeContents {
