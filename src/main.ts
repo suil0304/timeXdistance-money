@@ -86,6 +86,7 @@ async function addressSearch(address:string) {
         console.log(`위도(y): ${coords.getLat()}, 경도(x): ${coords.getLng()}`);
 
         map.setCenter(coords);
+        map.setLevel(3);
 
         const marker = new kakao.maps.Marker({
             map: map,
@@ -112,11 +113,14 @@ const initMap = () => {
 
     var mapOption = { 
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
-        level: 3 
+        level: 3,
+        keyboardShortcuts: {speed: 10}
     };
 
     map = new kakao.maps.Map(mapContainer, mapOption);
     geocoder = new kakao.maps.services.Geocoder();
+
+    map.setMaxLevel(9);
 }
 const initVar = () => {
     routeCalcButton = document.getElementById("route-calc") as HTMLElement;
