@@ -14,7 +14,6 @@ var toll:HTMLElement;
 var cost:HTMLElement;
 var costTotal:HTMLElement;
 
-var routeCalcButton:HTMLElement;
 var moneyCalcButton:HTMLElement;
 
 // var(inputs)
@@ -191,7 +190,6 @@ const initMap = () => {
     place = new kakao.maps.services.Places();
 }
 const initVar = () => {
-    routeCalcButton = document.getElementById("route-calc") as HTMLElement;
     moneyCalcButton = document.getElementById("money-calc") as HTMLElement;
     start = document.getElementById("start") as HTMLInputElement;
     end = document.getElementById("end") as HTMLInputElement;
@@ -209,11 +207,8 @@ const initVar = () => {
         search(end.value);
     });
 
-    routeCalcButton.addEventListener("click", () => {
+    moneyCalcButton.addEventListener("click", () => {
         calculateRoute(start.value, end.value);
-    });
-    moneyCalcButton.addEventListener('click', () => {
-        getCost(start.value, end.value)
     });
 }
 
