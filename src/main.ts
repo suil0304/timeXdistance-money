@@ -10,7 +10,7 @@ var start:HTMLInputElement;
 var end:HTMLInputElement;
 
 var map:kakao.maps.Map;
-var markers:kakao.maps.Marker[] = [];
+var markers:Array<kakao.maps.Marker> = [];
 
 // constant
 var geocoder:kakao.maps.services.Geocoder;
@@ -111,15 +111,15 @@ const initVar = () => {
     start = document.getElementById("start") as HTMLInputElement;
     end = document.getElementById("end") as HTMLInputElement;
 
-    start.addEventListener("keydown", (e) => {
-        handleEnter(e, () => addressSearch(start.value));
-    });
+    start.addEventListener("keydown", (e) => handleEnter(e, () => {
+        start.blur();
+    }));
     start.addEventListener("blur", () => {
         addressSearch(start.value);
     });
-    end.addEventListener("keydown", (e) => {
-        handleEnter(e, () => addressSearch(end.value));
-    });
+    end.addEventListener("keydown", (e) => handleEnter(e, () => {
+        end.blur();
+    }));
     end.addEventListener("blur", () => {
         addressSearch(end.value);
     });
