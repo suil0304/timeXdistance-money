@@ -59,12 +59,15 @@ async function calculateRoute(startValue:string = "", endValue:string = ""):Prom
     }
 }
 
-function addressSearch(address:string, failCallback:() => void = () => {}) {
+function addressSearch(address:string) {
     // if(markers.length > 1) {
     //     markers.pop();
     // }
 
     geocoder.addressSearch(address, (result:any, status:any) => {
+        console.log(`주소: ${address}`);
+        console.log(`위도(y): ${result[0].y}, 경도(x): ${result[0].x}`);
+
         if(status === kakao.maps.services.Status.OK) {
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
             
@@ -80,7 +83,7 @@ function addressSearch(address:string, failCallback:() => void = () => {}) {
             markers.push(marker);
         }
         else {
-            failCallback();
+
         }
     });
 }
