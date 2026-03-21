@@ -1,14 +1,22 @@
 /// <reference path="../node_modules/kakao.maps.d.ts/@types/index.d.ts" />
 import type {KakaoRouteResponse} from "../@types/types"
 
-// var
+// var(Elements)
 var mapContainer:HTMLElement;
-var result:HTMLElement;
+var distance:HTMLElement;
+var duration:HTMLElement;
+var toll:HTMLElement;
+var cost:HTMLElement;
+var costTotal:HTMLElement;
+
 var routeCalcButton:HTMLElement;
 var moneyCalcButton:HTMLElement;
+
+// var(inputs)
 var start:HTMLInputElement;
 var end:HTMLInputElement;
 
+// var(kakao)
 var map:kakao.maps.Map;
 var geocoder:kakao.maps.services.Geocoder;
 var place:kakao.maps.services.Places;
@@ -20,10 +28,17 @@ async function getCost(start:string, end:string):Promise<void> {
     const response = await fetch(`https://time-x-distance-money.vercel.app/api/get-route?origin=${start}&destination=${end}`);
     const data = await response.json() as KakaoRouteResponse;
 
-    const taxiFare = data.routes[0].summary.fare.taxi;
-    const tollFare = data.routes[0].summary.fare.toll;
+    const distanceSummary = data.routes[0].summary.distance;
+    const durationSummary = data.routes[0].summary.duration;
+    const tollSummary = data.routes[0].summary.fare.toll;
+    const costSummary = data.routes[0].summary.fare.taxi;
+    const costTotalSummary = tollSummary + costSummary;
 
-    result.innerText = `편도 택시비: ${taxiFare}원, 통행료: ${tollFare}원`;
+    distance.innerText = `${distanceSummary}`;
+    duration.innerText = `${durationSummary}`;
+    toll.innerText = `${tollSummary}`;
+    cost.innerText = `${costSummary}`;
+    costTotal.innerText = `${costTotalSummary}`;
 }
 
 async function getCoords(query:string):Promise<kakao.maps.LatLng> {
@@ -94,6 +109,10 @@ async function calculateRoute(startValue:string = "", endValue:string = ""):Prom
 }
 
 async function search(query:string) {
+    if(!query) {
+        return;
+    }
+
     try {
         const coords = await getCoords(query);
 
@@ -130,7 +149,11 @@ const initMap = () => {
     mapContainer = document.getElementById('map') as HTMLElement;
     if(!mapContainer) return;
 
-    result = document.getElementById('result') as HTMLElement;
+    distance = document.getElementById('distance') as HTMLElement;
+    duration = document.getElementById('duration') as HTMLElement;
+    toll = document.getElementById('toll') as HTMLElement;
+    cost = document.getElementById('cost') as HTMLElement;
+    costTotal = document.getElementById('cost-total') as HTMLElement;
 
     var mapOption = { 
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
