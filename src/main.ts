@@ -41,7 +41,7 @@ function getCoordsByAddress(address: string): Promise<string> {
     });
 }
 
-async function calculateRoute(startValue:string = "", endValue:string | null = ""):Promise<void> {
+async function calculateRoute(startValue:string = "", endValue:string = ""):Promise<void> {
     if(!startValue || !endValue) {
         alert("출발지와 목적지 모두 입력해주세요.");
         return;
@@ -111,10 +111,6 @@ const initVar = () => {
     start = document.getElementById("start") as HTMLInputElement;
     end = document.getElementById("end") as HTMLInputElement;
 
-    routeCalcButton.addEventListener("click", () => {
-        calculateRoute(start.value, end.value);
-    });
-
     start.addEventListener("keydown", (e) => {
         handleEnter(e, () => addressSearch(start.value));
     });
@@ -127,8 +123,13 @@ const initVar = () => {
     end.addEventListener("blur", () => {
         addressSearch(end.value);
     });
-    routeCalcButton.addEventListener('click', () => calculateRoute());
-    moneyCalcButton.addEventListener('click', () => getCost(start.value, end.value));
+
+    routeCalcButton.addEventListener("click", () => {
+        calculateRoute(start.value, end.value);
+    });
+    moneyCalcButton.addEventListener('click', () => {
+        getCost(start.value, end.value)
+    });
 }
 
 // onLoad
