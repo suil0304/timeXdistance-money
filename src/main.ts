@@ -1,9 +1,15 @@
 /// <reference path="../node_modules/kakao.maps.d.ts/@types/index.d.ts" />
-import type {KakaoRouteResponse} from "../@types/types"
+import {
+    type KakaoRouteResponse,
+    DistanceUnit,
+    type DistanceContents,
+    type TimeContents
+} from "../@types/types"
 
 // var(Elements)
 var mapContainer:HTMLElement;
 var distance:HTMLElement;
+var distanceUnit:HTMLElement;
 var duration:HTMLElement;
 var toll:HTMLElement;
 var cost:HTMLElement;
@@ -24,29 +30,48 @@ var place:kakao.maps.services.Places;
 var markers:Array<kakao.maps.Marker> = [];
 
 // func and arrow func
+function calcMeterAndUnit(distanceValue:number):DistanceContents {
+    if(distanceValue >= 600) {
+        return {distanceValue: (distanceValue / 1000.0), unitValue: DistanceUnit.KM};
+    }
+    else {
+        return {distanceValue: distanceValue, unitValue: DistanceUnit.M};
+    }
+}
+
+function calcTime(second:number):TimeContents {
+    var secondValue = second % 60;
+    var minuteValue = Math.trunc(secondValue / 60) % 24;
+    var hourValue = Math.trunc(secondValue / 3600);
+
+    return {hour: hourValue, minute: minuteValue, second: secondValue};
+}
+
 async function getCost(start:string, end:string):Promise<void> {
     const response = await fetch(`https://time-x-distance-money.vercel.app/api/get-route?origin=${start}&destination=${end}`);
     const data = await response.json() as KakaoRouteResponse;
 
-    const distanceSummary = data.routes[0].summary.distance;
-    const durationSummary = data.routes[0].summary.duration;
+    const {distanceValue, unitValue} = calcMeterAndUnit(data.routes[0].summary.distance);
+    const {hour, minute, second} = calcTime(data.routes[0].summary.duration);
     const tollSummary = data.routes[0].summary.fare.toll;
     const costSummary = data.routes[0].summary.fare.taxi;
     const costTotalSummary = tollSummary + costSummary;
 
-    distance.innerText = `${distanceSummary}`;
-    duration.innerText = `${durationSummary}`;
+    distance.innerText = `${distanceValue.toFixed(2)}`;
+    distanceUnit.innerText = `${unitValue}`;
+    duration.innerText = `${hour}시 ${minute}분 ${second}초`;
     toll.innerText = `${tollSummary}`;
     cost.innerText = `${costSummary}`;
     costTotal.innerText = `${costTotalSummary}`;
 }
 
 async function getCoords(query:string):Promise<kakao.maps.LatLng> {
+    var _query = query.trim();
     try {
-        return await getCoordsByKeyword(query);
+        return await getCoordsByKeyword(_query);
     }
     catch {
-        return await getCoordsByAddress(query);
+        return await getCoordsByAddress(_query);
     }
 }
 
@@ -150,10 +175,11 @@ const initMap = () => {
     if(!mapContainer) return;
 
     distance = document.getElementById('distance') as HTMLElement;
+    distanceUnit = document.getElementById('distance-unit') as HTMLElement;
     duration = document.getElementById('duration') as HTMLElement;
     toll = document.getElementById('toll') as HTMLElement;
     cost = document.getElementById('cost') as HTMLElement;
-    costTotal = document.getElementById('cost-total') as HTMLElement;
+    costTotal = document.getElementById('total-cost') as HTMLElement;
 
     var mapOption = { 
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
