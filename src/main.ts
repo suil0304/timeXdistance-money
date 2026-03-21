@@ -5,7 +5,7 @@ import type {KakaoRouteResponse} from "../@types/types"
 var mapContainer:HTMLElement;
 var result:HTMLElement;
 var routeCalcButton:HTMLElement;
-// var moneyCalcButton:HTMLElement;
+var moneyCalcButton:HTMLElement;
 var start:HTMLInputElement;
 var end:HTMLInputElement;
 
@@ -62,6 +62,9 @@ async function calculateRoute(startValue:string = "", endValue:string | null = "
 function addressSearch(address:string, failCallback:() => void = () => {}) {
     geocoder.addressSearch(address, (result:any, status:any) => {
         if(status === kakao.maps.services.Status.OK) {
+            if(markers.length > 0) {
+                markers.pop();
+            }
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
             
             console.log(`주소: ${address}`);
@@ -103,7 +106,7 @@ const initMap = () => {
 }
 const initVar = () => {
     routeCalcButton = document.getElementById("route-calc") as HTMLElement;
-    // moneyCalcButton = document.getElementById("money-calc") as HTMLElement;
+    moneyCalcButton = document.getElementById("money-calc") as HTMLElement;
     start = document.getElementById("start") as HTMLInputElement;
     end = document.getElementById("end") as HTMLInputElement;
 
@@ -112,18 +115,19 @@ const initVar = () => {
     });
 
     start.addEventListener("keydown", (e) => {
-        handleEnter(e, () => addressSearch(start.value, () => start.focus()));
+        handleEnter(e, () => addressSearch(start.value));
     });
     start.addEventListener("blur", () => {
-        addressSearch(start.value, () => start.focus());
+        addressSearch(start.value);
     });
     end.addEventListener("keydown", (e) => {
-        handleEnter(e, () => addressSearch(end.value, () => end.focus()));
+        handleEnter(e, () => addressSearch(end.value));
     });
     end.addEventListener("blur", () => {
-        addressSearch(end.value, () => end.focus());
+        addressSearch(end.value);
     });
     routeCalcButton.addEventListener('click', () => calculateRoute());
+    moneyCalcButton.addEventListener('click', () => getCost(start.value, end.value));
 }
 
 // onLoad
