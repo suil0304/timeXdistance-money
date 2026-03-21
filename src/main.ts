@@ -41,7 +41,7 @@ function getCoordsByAddress(address: string): Promise<string> {
     });
 }
 
-async function calculateRoute(startValue:string = "", endValue:string | null = ""):Promise<void | undefined> {
+async function calculateRoute(startValue:string = "", endValue:string | null = ""):Promise<void> {
     if(!startValue || !endValue) {
         alert("출발지와 목적지 모두 입력해주세요.");
         return;
@@ -60,9 +60,9 @@ async function calculateRoute(startValue:string = "", endValue:string | null = "
 }
 
 function addressSearch(address:string, failCallback:() => void = () => {}) {
-    if(markers.length > 1) {
-        markers.pop();
-    }
+    // if(markers.length > 1) {
+    //     markers.pop();
+    // }
 
     geocoder.addressSearch(address, (result:any, status:any) => {
         if(status === kakao.maps.services.Status.OK) {
