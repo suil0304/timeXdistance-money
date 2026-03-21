@@ -26,10 +26,25 @@ async function getCost(start:string, end:string):Promise<void> {
     result.innerText = `편도 택시비: ${taxiFare}원, 통행료: ${tollFare}원`;
 }
 
-function getCoordsByAddress(address: string): Promise<string> {
+function getCoords(address:string):Promise<kakao.maps.LatLng> {
     return new Promise((resolve, reject) => {
         const geocoder = new kakao.maps.services.Geocoder();
-        geocoder.addressSearch(address, (result: any, status: any) => {
+
+        geocoder.addressSearch(address, (result:any, status:any) => {
+        if (status === kakao.maps.services.Status.OK) {
+            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+            resolve(coords);
+        }
+        else {
+            reject(new Error(`${address} 주소를 찾을 수 없습니다.`));
+        }
+        });
+    });
+}
+
+function getCoordsForAPI(address:string):Promise<string> {
+    return new Promise((resolve, reject) => {
+        geocoder.addressSearch(address, (result:any, status:any) => {
             if(status === kakao.maps.services.Status.OK) {
                 // Vercel API 형식에 맞게 "경도,위도" 문자열 반환
                 resolve(`${result[0].x},${result[0].y}`);
@@ -49,8 +64,8 @@ async function calculateRoute(startValue:string = "", endValue:string = ""):Prom
 
     try {
         console.log("주소를 좌표로 변환 중...");
-        const startCoords = await getCoordsByAddress(startValue);
-        const endCoords = await getCoordsByAddress(endValue);
+        const startCoords = await getCoordsForAPI(startValue);
+        const endCoords = await getCoordsForAPI(endValue);
 
         await getCost(startCoords, endCoords);
     }
@@ -59,33 +74,28 @@ async function calculateRoute(startValue:string = "", endValue:string = ""):Prom
     }
 }
 
-function addressSearch(address:string) {
-    // if(markers.length > 1) {
-    //     markers.pop();
-    // }
+async function addressSearch(address:string) {
+    try {
+        const coords = await getCoords(address);
 
-    geocoder.addressSearch(address, (result:any, status:any) => {
+        if(markers.length > 0) {
+            markers.pop();
+        }
+
         console.log(`주소: ${address}`);
-        console.log(`위도(y): ${result[0].y}, 경도(x): ${result[0].x}`);
+        console.log(`위도(y): ${coords.getLat()}, 경도(x): ${coords.getLng()}`);
 
-        if(status === kakao.maps.services.Status.OK) {
-            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-            
-            console.log(`주소: ${address}`);
-            console.log(`위도(y): ${result[0].y}, 경도(x): ${result[0].x}`);
+        map.setCenter(coords);
 
-            map.setCenter(coords);
+        const marker = new kakao.maps.Marker({
+            map: map,
+            position: coords
+        });
+        markers.push(marker);
+    }
+    catch {
 
-            const marker = new kakao.maps.Marker({
-                map: map,
-                position: coords
-            });
-            markers.push(marker);
-        }
-        else {
-
-        }
-    });
+    }
 }
 
 const handleEnter = (e:KeyboardEvent, nextAction:() => void) => {
