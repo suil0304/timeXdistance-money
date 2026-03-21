@@ -37,8 +37,6 @@ async function getCoords(query:string):Promise<kakao.maps.LatLng> {
 
 function getCoordsByAddress(address:string):Promise<kakao.maps.LatLng> {
     return new Promise((resolve, reject) => {
-            const geocoder = new kakao.maps.services.Geocoder();
-
             geocoder.addressSearch(address, (result:any, status:any) => {
             if (status === kakao.maps.services.Status.OK) {
                 const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
