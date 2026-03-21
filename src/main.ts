@@ -1,10 +1,10 @@
 /// <reference path="../node_modules/kakao.maps.d.ts/@types/index.d.ts" />
-import {
-    type KakaoRouteResponse,
-    DistanceUnit,
-    type DistanceContents,
-    type TimeContents
-} from "../@types/types"
+import type {
+    KakaoRouteResponse,
+    DistanceContents,
+    TimeContents
+} from "../@types/types.d.ts"
+import {DistanceUnit} from "../@types/types";
 
 // var(Elements)
 var mapContainer:HTMLElement;
