@@ -60,7 +60,7 @@ async function calculateRoute(startValue:string = "", endValue:string | null = "
 }
 
 function addressSearch(address:string, failCallback:() => void = () => {}) {
-    if(markers.length > 0) {
+    if(markers.length > 1) {
         markers.pop();
     }
 
