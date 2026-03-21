@@ -38,10 +38,10 @@ function calcMeterAndUnit(distanceValue:number):DistanceContents {
     }
 }
 
-function calcTime(second:number):TimeContents {
-    var secondValue = second % 60;
-    var minuteValue = Math.trunc(secondValue / 60) % 24;
-    var hourValue = Math.trunc(secondValue / 3600);
+function calcTime(totalSeconds:number):TimeContents {
+    const hourValue = Math.floor(totalSeconds / 3600);
+    const minuteValue = Math.floor((totalSeconds % 3600) / 60);
+    const secondValue = totalSeconds % 60;
 
     return {hour: hourValue, minute: minuteValue, second: secondValue};
 }
